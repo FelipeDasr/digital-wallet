@@ -13,6 +13,10 @@ export class TypeORMUserRepository implements UsersRepository {
 	}
 
 	public async findById(id: string): Promise<UserEntity | null> {
-		throw new Error("Method not implemented.");
+		return await this.repository.findOneBy({ id });
+	}
+
+	public async findByEmail(email: string): Promise<UserEntity | null> {
+		return await this.repository.findOneBy({ email });
 	}
 }
