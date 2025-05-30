@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
-import { env } from "src/env";
-import { DataSource } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
+import { env } from "../../../env";
 
 @Injectable()
 export class TypeORMService
@@ -8,11 +8,7 @@ export class TypeORMService
 	implements OnModuleInit, OnModuleDestroy
 {
 	constructor() {
-		super({
-			type: "postgres",
-			url: env.DATABASE_URL,
-			synchronize: false,
-		});
+		super(typeORMDataSource);
 	}
 
 	async onModuleInit() {
@@ -34,3 +30,11 @@ export class TypeORMService
 		}
 	}
 }
+
+export const typeORMDataSource: DataSourceOptions = {
+	type: "postgres",
+	url: env.DATABASE_URL,
+	synchronize: false,
+	entities: ["src/application/*/entities/*.entity.{ts,js}"],
+	migrations: ["src/infra/database/typeorm/migrations/*.ts"],
+};
