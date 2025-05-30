@@ -1,8 +1,11 @@
+import { TransactionEntity } from "@application/transactions/entities/transaction.entity";
 import { UserEntity } from "@application/users/entities/user.entity";
+import WalletEntity from "@application/wallets/entities/wallet.entity";
+
+import { env } from "src/env";
 
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { DataSource, DataSourceOptions } from "typeorm";
-import { env } from "../../../env";
 
 @Injectable()
 export class TypeORMService
@@ -37,6 +40,6 @@ export const typeORMDataSource: DataSourceOptions = {
 	type: "postgres",
 	url: env.DATABASE_URL,
 	synchronize: false,
-	entities: [UserEntity],
+	entities: [UserEntity, WalletEntity, TransactionEntity],
 	migrations: ["src/infra/database/typeorm/migrations/*.js"],
 };

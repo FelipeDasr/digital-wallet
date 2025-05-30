@@ -1,5 +1,6 @@
+import { WalletEntity } from "@application/wallets/entities/wallet.entity";
 import { OmitType } from "@nestjs/swagger";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "users" })
 export class UserEntity {
@@ -27,6 +28,12 @@ export class UserEntity {
 		default: new Date(),
 	})
 	updatedAt: Date;
+
+	@OneToMany(
+		() => WalletEntity,
+		(wallet) => wallet.user,
+	)
+	wallets?: WalletEntity[];
 }
 
 export class UserEntityWithoutPassword extends OmitType(UserEntity, [

@@ -1,6 +1,7 @@
 import { UsersRepository } from "@application/users/repositories/users.repository";
-import { Module } from "@nestjs/common";
 import { TypeORMUserRepository } from "./typeorm/repositories/users/typeorm-user.repository";
+
+import { Module } from "@nestjs/common";
 import { TypeORMService } from "./typeorm/typeorm.service";
 
 @Module({
