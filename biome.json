@@ -10,6 +10,9 @@
   },
   "linter": {
     "rules": {
+      "style": {
+        "useImportType": "off"
+      },
       "suspicious": {
         "noMisleadingCharacterClass": "warn"
       },
