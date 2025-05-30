@@ -60,9 +60,15 @@ async function bootstrap() {
 			credentials: true,
 		});
 
-		await app.listen(env.PORT, env.HOST || "0.0.0.0");
-		const serverAddress = await app.getUrl();
-		console.info(`\nServer is running at: ${serverAddress}\n`);
+		const host = env.HOST || "0.0.0.0";
+
+		await app.listen(env.PORT, host);
+		const serverAddress = `http://${host}:${env.PORT}`;
+
+		console.info(
+			`\nServer is running at: ${serverAddress}\n` +
+				`Swagger documentation is available at: ${serverAddress}/api-docs\n`,
+		);
 	} catch (error) {
 		console.error(`\nServer ${error.message} \n`);
 		process.exit(1);

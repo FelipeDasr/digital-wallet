@@ -35,6 +35,6 @@ export const typeORMDataSource: DataSourceOptions = {
 	type: "postgres",
 	url: env.DATABASE_URL,
 	synchronize: false,
-	entities: ["src/application/*/entities/*.entity.{ts,js}"],
-	migrations: ["src/infra/database/typeorm/migrations/*.ts"],
+	entities: ["src/application/**/entities/*.entity.js"],
+	migrations: ["src/infra/database/typeorm/migrations/*.js"],
 };

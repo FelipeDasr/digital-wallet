@@ -30,5 +30,10 @@
   },
   "organizeImports": {
     "enabled": true
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
   }
 }
