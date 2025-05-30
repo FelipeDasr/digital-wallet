@@ -1,3 +1,5 @@
+import { UserEntity } from "@application/users/entities/user.entity";
+
 import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { DataSource, DataSourceOptions } from "typeorm";
 import { env } from "../../../env";
@@ -35,6 +37,6 @@ export const typeORMDataSource: DataSourceOptions = {
 	type: "postgres",
 	url: env.DATABASE_URL,
 	synchronize: false,
-	entities: ["src/application/**/entities/*.entity.js"],
+	entities: [UserEntity],
 	migrations: ["src/infra/database/typeorm/migrations/*.js"],
 };
