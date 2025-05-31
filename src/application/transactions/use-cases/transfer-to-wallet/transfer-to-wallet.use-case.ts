@@ -1,6 +1,7 @@
 import { TransactionsRepository } from "@application/transactions/repositories/transactions.repository";
 import { WalletsRepository } from "@application/wallets/repositories/wallets.repository";
 
+import { TransactionIdDTO } from "@application/transactions/dtos/transaction-id.dto";
 import { WalletTransferDTO } from "@application/transactions/dtos/wallet-transfer";
 import { UserEntity } from "@application/users/entities/user.entity";
 
@@ -29,15 +30,15 @@ export class TransferToWalletUseCase {
 	public async execute(
 		user: UserEntity,
 		{ amount, destinationWalletId }: WalletTransferDTO,
-	) {
-		await this.databaseTransaction.start(async (transaction) => {
+	): Promise<TransactionIdDTO> {
+		return await this.databaseTransaction.start(async (transaction) => {
 			const sourceWalletId = user.wallets[0].id;
 			const valueToDebit = amount * -1;
 
 			await this.checkSufficientBalance(sourceWalletId, amount, transaction);
 			await this.checkDestinationWallet(destinationWalletId, transaction);
 
-			await Promise.all([
+			const [_, __, transactionId] = await Promise.all([
 				this.walletsRepository.incrementBalanceById(
 					sourceWalletId,
 					valueToDebit,
@@ -59,6 +60,10 @@ export class TransferToWalletUseCase {
 					transaction,
 				),
 			]);
+
+			return {
+				transactionId,
+			};
 		});
 	}
 

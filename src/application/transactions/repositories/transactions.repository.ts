@@ -5,5 +5,5 @@ export abstract class TransactionsRepository {
 	public abstract create(
 		data: CreateTransactionDTO,
 		transaction: DatabaseTransactionManager,
-	): Promise<void>;
+	): Promise<string>;
 }

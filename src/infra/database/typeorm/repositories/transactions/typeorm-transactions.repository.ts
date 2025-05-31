@@ -18,7 +18,11 @@ export class TypeORMTransactionsRepository implements TransactionsRepository {
 	public async create(
 		data: CreateTransactionDTO,
 		transaction: EntityManager,
-	): Promise<void> {
-		await transaction.getRepository(TransactionEntity).save(data);
+	): Promise<string> {
+		const newTransactions = await transaction
+			.getRepository(TransactionEntity)
+			.save(data);
+
+		return newTransactions.id;
 	}
 }
