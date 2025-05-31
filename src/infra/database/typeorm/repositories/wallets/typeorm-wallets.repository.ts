@@ -17,4 +17,8 @@ export class TypeORMWalletsRepository implements WalletsRepository {
 	public async findByUserId(userId: string): Promise<WalletEntity | null> {
 		return await this.repository.findOneBy({ user_id: userId });
 	}
+
+	public async incrementBalanceById(id: string, amount: number): Promise<void> {
+		await this.repository.increment({ id }, "balance", amount);
+	}
 }

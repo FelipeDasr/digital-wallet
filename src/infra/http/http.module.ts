@@ -1,5 +1,6 @@
 import { AuthenticateUserUseCase } from "@application/users/use-cases/authenticate-user/authenticate-user.use-case";
 import { CreateUserUseCase } from "@application/users/use-cases/create-user/create-user.use-case";
+import { DepositInWalletUseCase } from "@application/wallets/use-cases/deposit-in-wallet/deposit-in-wallet.use-case";
 import { FindUserWalletUseCase } from "@application/wallets/use-cases/find-user-wallet/find-user-wallet.use-case";
 
 import { AuthController } from "./controllers/auth/auth.controller";
@@ -17,6 +18,7 @@ import { Module } from "@nestjs/common";
 		CreateUserUseCase,
 		AuthenticateUserUseCase,
 		FindUserWalletUseCase,
+		DepositInWalletUseCase,
 	],
 	exports: [],
 })
