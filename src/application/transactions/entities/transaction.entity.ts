@@ -12,6 +12,11 @@ export enum TransactionStatus {
 	REFUNDED = "REFUNDED",
 }
 
+export enum TransactionType {
+	TRANSFER = "TRANSFER",
+	DEPOSIT = "DEPOSIT",
+}
+
 @Entity({ name: "transactions" })
 export class TransactionEntity {
 	@Column()
@@ -20,6 +25,12 @@ export class TransactionEntity {
 
 	@Column({ type: "integer" })
 	amount: number;
+
+	@Column({
+		type: "enum",
+		enum: TransactionType,
+	})
+	type: TransactionType;
 
 	@Column({
 		type: "enum",
@@ -33,10 +44,18 @@ export class TransactionEntity {
 	@Column({ name: "destination_wallet_id", type: "uuid" })
 	destinationWalletId: string;
 
-	@Column({ name: "created_at", type: "timestamp", default: new Date() })
+	@Column({
+		name: "created_at",
+		type: "timestamp",
+		default: "NOW()",
+	})
 	createdAt: Date;
 
-	@Column({ name: "updated_at", type: "timestamp", default: new Date() })
+	@Column({
+		name: "updated_at",
+		type: "timestamp",
+		default: "NOW()",
+	})
 	updatedAt: Date;
 
 	@ManyToOne(
