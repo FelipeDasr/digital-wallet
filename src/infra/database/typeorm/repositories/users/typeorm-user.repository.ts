@@ -1,5 +1,10 @@
-import { UserEntity } from "@application/users/entities/user.entity";
+import { CreateUserDTO } from "@application/users/dtos/create-user.dto";
+import {
+	UserEntity,
+	UserEntityWithoutPassword,
+} from "@application/users/entities/user.entity";
 import { UsersRepository } from "@application/users/repositories/users.repository";
+import WalletEntity from "@application/wallets/entities/wallet.entity";
 import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { TypeORMService } from "../../typeorm.service";
@@ -10,6 +15,33 @@ export class TypeORMUserRepository implements UsersRepository {
 
 	constructor(private readonly db: TypeORMService) {
 		this.repository = this.db.getRepository(UserEntity);
+	}
+
+	public async create({
+		initialBalance,
+		...user
+	}: CreateUserDTO): Promise<UserEntityWithoutPassword> {
+		return await this.db.manager.transaction(
+			async (transactionalEntityManager) => {
+				const newUser = await transactionalEntityManager.save(
+					new UserEntity(user),
+				);
+
+				newUser.wallets = [
+					await transactionalEntityManager.save(
+						new WalletEntity({
+							user_id: newUser.id,
+							balance: initialBalance,
+						}),
+					),
+				];
+
+				return {
+					...newUser,
+					password: undefined,
+				} as UserEntityWithoutPassword;
+			},
+		);
 	}
 
 	public async findById(id: string): Promise<UserEntity | null> {

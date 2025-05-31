@@ -41,6 +41,10 @@ export class WalletEntity {
 		{ createForeignKeyConstraints: false },
 	)
 	receivedTransactions?: TransactionEntity[];
+
+	constructor(partial: Partial<WalletEntity>) {
+		Object.assign(this, partial);
+	}
 }
 
 export default WalletEntity;

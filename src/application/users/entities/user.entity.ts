@@ -32,9 +32,13 @@ export class UserEntity {
 	@OneToMany(
 		() => WalletEntity,
 		(wallet) => wallet.user,
-		{ createForeignKeyConstraints: false },
+		{ createForeignKeyConstraints: false, eager: true },
 	)
 	wallets?: WalletEntity[];
+
+	constructor(partial: Partial<UserEntity> = {}) {
+		Object.assign(this, partial);
+	}
 }
 
 export class UserEntityWithoutPassword extends OmitType(UserEntity, [
