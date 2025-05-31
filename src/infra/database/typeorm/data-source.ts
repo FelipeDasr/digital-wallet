@@ -1,4 +1,4 @@
+import { typeORMDataSource } from "@infra/database/typeorm/typeorm.service";
 import { DataSource } from "typeorm";
-import { typeORMDataSource } from "./typeorm.service";
 
 export default new DataSource(typeORMDataSource);
