@@ -3,7 +3,7 @@ import { WalletEntity } from "@application/wallets/entities/wallet.entity";
 import { WalletsRepository } from "@application/wallets/repositories/wallets.repository";
 
 import { Injectable } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { EntityManager, Repository } from "typeorm";
 import { TypeORMService } from "../../typeorm.service";
 
 @Injectable()
@@ -18,7 +18,18 @@ export class TypeORMWalletsRepository implements WalletsRepository {
 		return await this.repository.findOneBy({ user_id: userId });
 	}
 
-	public async incrementBalanceById(id: string, amount: number): Promise<void> {
-		await this.repository.increment({ id }, "balance", amount);
+	public async incrementBalanceById(
+		id: string,
+		amount: number,
+		transaction: EntityManager,
+	): Promise<void> {
+		await transaction
+			.getRepository(WalletEntity)
+			.createQueryBuilder()
+			.setLock("pessimistic_write")
+			.where("id = :id", { id })
+			.update()
+			.set({ balance: () => `balance + ${amount}` })
+			.execute();
 	}
 }

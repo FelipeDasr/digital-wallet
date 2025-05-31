@@ -2,8 +2,9 @@ import { TransactionEntity } from "@application/transactions/entities/transactio
 
 import { TransactionsRepository } from "@application/transactions/repositories/transactions.repository";
 
+import { CreateTransactionDTO } from "@application/transactions/dtos/create-transaction.dto";
 import { Injectable } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { EntityManager, Repository } from "typeorm";
 import { TypeORMService } from "../../typeorm.service";
 
 @Injectable()
@@ -12,5 +13,12 @@ export class TypeORMTransactionsRepository implements TransactionsRepository {
 
 	constructor(private readonly db: TypeORMService) {
 		this.repository = this.db.getRepository(TransactionEntity);
+	}
+
+	public async create(
+		data: CreateTransactionDTO,
+		transaction: EntityManager,
+	): Promise<void> {
+		await transaction.getRepository(TransactionEntity).save(data);
 	}
 }

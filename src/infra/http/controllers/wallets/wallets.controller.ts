@@ -6,7 +6,14 @@ import { WalletEntity } from "@application/wallets/entities/wallet.entity";
 import { WalletDepositDTO } from "@application/wallets/dtos/wallet-deposit.dto";
 import { DepositInWalletUseCase } from "@application/wallets/use-cases/deposit-in-wallet/deposit-in-wallet.use-case";
 import { LoggedInUser } from "@common/decorators/logged-in-user.decorator";
-import { Body, Controller, Get, HttpStatus, Post } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Post,
+} from "@nestjs/common";
 import {
 	ApiBearerAuth,
 	ApiOperation,
@@ -30,6 +37,7 @@ export class WalletsController {
 		status: HttpStatus.OK,
 		type: WalletEntity,
 	})
+	@HttpCode(HttpStatus.OK)
 	@Get()
 	public async findUserWallet(@LoggedInUser() user: UserEntity) {
 		return await this.findUserWalletUseCase.execute(user.id);
@@ -41,6 +49,7 @@ export class WalletsController {
 	@ApiResponse({
 		status: HttpStatus.OK,
 	})
+	@HttpCode(HttpStatus.OK)
 	@Post("deposit")
 	public async depositInWallet(
 		@LoggedInUser() user: UserEntity,

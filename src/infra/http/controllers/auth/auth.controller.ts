@@ -1,7 +1,14 @@
 import { AuthenticatedUserDataDTO } from "@application/users/dtos/authenticated-user-data.dto";
 import { CreateUserDTO } from "@application/users/dtos/create-user.dto";
 
-import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	HttpCode,
+	HttpStatus,
+	Post,
+	Res,
+} from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 
@@ -27,6 +34,7 @@ export class AuthController {
 		status: HttpStatus.CREATED,
 		type: AuthenticatedUserDataDTO,
 	})
+	@HttpCode(HttpStatus.CREATED)
 	@Post("signup")
 	public async signup(@Body() data: CreateUserDTO, @Res() res: Response) {
 		const response = await this.createUserUseCase.execute(data);
@@ -40,6 +48,7 @@ export class AuthController {
 		status: HttpStatus.OK,
 		type: AuthenticatedUserDataDTO,
 	})
+	@HttpCode(HttpStatus.OK)
 	@Post("signin")
 	public async signin(@Body() data: AuthenticateUserDTO, @Res() res: Response) {
 		const response = await this.authenticateUserUseCase.execute(data);
