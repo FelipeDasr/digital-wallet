@@ -32,6 +32,7 @@ export class UserEntity {
 	@OneToMany(
 		() => WalletEntity,
 		(wallet) => wallet.user,
+		{ createForeignKeyConstraints: false },
 	)
 	wallets?: WalletEntity[];
 }

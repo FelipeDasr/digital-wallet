@@ -41,5 +41,4 @@ export const typeORMDataSource: DataSourceOptions = {
 	url: env.DATABASE_URL,
 	synchronize: false,
 	entities: [UserEntity, WalletEntity, TransactionEntity],
-	migrations: ["src/infra/database/typeorm/migrations/*.js"],
 };
