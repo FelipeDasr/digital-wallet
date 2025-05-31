@@ -38,11 +38,11 @@ export class TransactionEntity {
 	})
 	status: TransactionStatus;
 
-	@Column({ name: "source_wallet_id", type: "uuid" })
-	sourceWalletId: string;
+	@Column({ name: "source_wallet_id", type: "uuid", nullable: true })
+	sourceWalletId: string | null;
 
-	@Column({ name: "destination_wallet_id", type: "uuid" })
-	destinationWalletId: string;
+	@Column({ name: "destination_wallet_id", type: "uuid", nullable: true })
+	destinationWalletId: string | null;
 
 	@Column({
 		name: "created_at",
@@ -71,4 +71,8 @@ export class TransactionEntity {
 	)
 	@JoinColumn({ name: "destination_wallet_id" })
 	destinationWallet?: WalletEntity;
+
+	constructor(data: Partial<TransactionEntity>) {
+		Object.assign(this, data);
+	}
 }
