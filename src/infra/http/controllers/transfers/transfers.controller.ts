@@ -4,6 +4,8 @@ import { UserEntity } from "@application/users/entities/user.entity";
 
 import { WalletDepositDTO } from "@application/transactions/dtos/wallet-deposit.dto";
 
+import { WalletTransferDTO } from "@application/transactions/dtos/wallet-transfer";
+import { TransferToWalletUseCase } from "@application/transactions/use-cases/transfer-to-wallet/transfer-to-wallet.use-case";
 import { LoggedInUser } from "@common/decorators/logged-in-user.decorator";
 import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import {
@@ -19,6 +21,7 @@ import {
 export class TransactionsController {
 	constructor(
 		private readonly depositInWalletUseCase: DepositInWalletUseCase,
+		private readonly transferToWalletUseCase: TransferToWalletUseCase,
 	) {}
 
 	@ApiOperation({
@@ -34,5 +37,20 @@ export class TransactionsController {
 		@Body() data: WalletDepositDTO,
 	) {
 		await this.depositInWalletUseCase.execute(user, data);
+	}
+
+	@ApiOperation({
+		description: "Transfer an amount to another wallet",
+	})
+	@ApiResponse({
+		status: HttpStatus.OK,
+	})
+	@HttpCode(HttpStatus.OK)
+	@Post("transfer")
+	public async transferToWallet(
+		@LoggedInUser() user: UserEntity,
+		@Body() data: WalletTransferDTO,
+	) {
+		await this.transferToWalletUseCase.execute(user, data);
 	}
 }

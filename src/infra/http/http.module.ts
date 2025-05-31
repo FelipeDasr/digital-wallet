@@ -1,4 +1,5 @@
 import { DepositInWalletUseCase } from "@application/transactions/use-cases/deposit-in-wallet/deposit-in-wallet.use-case";
+import { TransferToWalletUseCase } from "@application/transactions/use-cases/transfer-to-wallet/transfer-to-wallet.use-case";
 import { AuthenticateUserUseCase } from "@application/users/use-cases/authenticate-user/authenticate-user.use-case";
 import { CreateUserUseCase } from "@application/users/use-cases/create-user/create-user.use-case";
 import { FindUserWalletUseCase } from "@application/wallets/use-cases/find-user-wallet/find-user-wallet.use-case";
@@ -20,6 +21,7 @@ import { TransactionsController } from "./controllers/transfers/transfers.contro
 		AuthenticateUserUseCase,
 		FindUserWalletUseCase,
 		DepositInWalletUseCase,
+		TransferToWalletUseCase,
 	],
 	exports: [],
 })

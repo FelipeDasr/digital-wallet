@@ -18,6 +18,17 @@ export class TypeORMWalletsRepository implements WalletsRepository {
 		return await this.repository.findOneBy({ user_id: userId });
 	}
 
+	public async existsById(
+		id: string,
+		transaction: EntityManager,
+	): Promise<boolean> {
+		const wallet = await transaction
+			.getRepository(WalletEntity)
+			.findOneBy({ id });
+
+		return !!wallet;
+	}
+
 	public async incrementBalanceById(
 		id: string,
 		amount: number,
@@ -31,5 +42,20 @@ export class TypeORMWalletsRepository implements WalletsRepository {
 			.update()
 			.set({ balance: () => `balance + ${amount}` })
 			.execute();
+	}
+
+	public async getBalance(
+		id: string,
+		transaction: EntityManager,
+	): Promise<number> {
+		const wallet = await transaction
+			.getRepository(WalletEntity)
+			.findOneBy({ id });
+
+		if (!wallet) {
+			return 0;
+		}
+
+		return wallet.balance;
 	}
 }
