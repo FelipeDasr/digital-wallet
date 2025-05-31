@@ -9,15 +9,12 @@ import {
 	TransactionStatus,
 	TransactionType,
 } from "@application/transactions/entities/transaction.entity";
+import { CheckWalletBalanceUseCase } from "@application/wallets/use-cases/check-wallet-balance/check-wallet-balance.use-case";
 import {
 	DatabaseTransaction,
 	DatabaseTransactionManager,
 } from "@infra/database/types/transactions.props";
-import {
-	BadRequestException,
-	Injectable,
-	NotFoundException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class TransferToWalletUseCase {
@@ -25,6 +22,7 @@ export class TransferToWalletUseCase {
 		private readonly transactionsRepository: TransactionsRepository,
 		private readonly walletsRepository: WalletsRepository,
 		private readonly databaseTransaction: DatabaseTransaction,
+		private readonly checkWalletBalanceUseCase: CheckWalletBalanceUseCase,
 	) {}
 
 	public async execute(
@@ -33,15 +31,20 @@ export class TransferToWalletUseCase {
 	): Promise<TransactionIdDTO> {
 		return await this.databaseTransaction.start(async (transaction) => {
 			const sourceWalletId = user.wallets[0].id;
-			const valueToDebit = amount * -1;
+			const newDebitValue = amount * -1;
 
-			await this.checkSufficientBalance(sourceWalletId, amount, transaction);
+			await this.checkWalletBalanceUseCase.execute(
+				sourceWalletId,
+				amount,
+				transaction,
+			);
+
 			await this.checkDestinationWallet(destinationWalletId, transaction);
 
 			const [_, __, transactionId] = await Promise.all([
 				this.walletsRepository.incrementBalanceById(
 					sourceWalletId,
-					valueToDebit,
+					newDebitValue,
 					transaction,
 				),
 				this.walletsRepository.incrementBalanceById(
@@ -65,21 +68,6 @@ export class TransferToWalletUseCase {
 				transactionId,
 			};
 		});
-	}
-
-	private async checkSufficientBalance(
-		walletId: string,
-		amount: number,
-		transaction: DatabaseTransactionManager,
-	) {
-		const sourceWalletBalance = await this.walletsRepository.getBalance(
-			walletId,
-			transaction,
-		);
-
-		if (sourceWalletBalance < amount) {
-			throw new BadRequestException("Insufficient balance in wallet");
-		}
 	}
 
 	private async checkDestinationWallet(

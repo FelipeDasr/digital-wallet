@@ -7,6 +7,7 @@ import { FindUserWalletUseCase } from "@application/wallets/use-cases/find-user-
 import { AuthController } from "./controllers/auth/auth.controller";
 import { WalletsController } from "./controllers/wallets/wallets.controller";
 
+import { CheckWalletBalanceUseCase } from "@application/wallets/use-cases/check-wallet-balance/check-wallet-balance.use-case";
 import { ProvidersModule } from "@common/providers/providers.module";
 import { AuthModule } from "@infra/auth/auth.module";
 import { DatabaseModule } from "@infra/database/database.module";
@@ -20,6 +21,7 @@ import { TransactionsController } from "./controllers/transfers/transfers.contro
 		CreateUserUseCase,
 		AuthenticateUserUseCase,
 		FindUserWalletUseCase,
+		CheckWalletBalanceUseCase,
 		DepositInWalletUseCase,
 		TransferToWalletUseCase,
 	],
