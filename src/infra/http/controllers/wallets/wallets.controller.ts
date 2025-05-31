@@ -3,17 +3,8 @@ import { FindUserWalletUseCase } from "@application/wallets/use-cases/find-user-
 import { UserEntity } from "@application/users/entities/user.entity";
 import { WalletEntity } from "@application/wallets/entities/wallet.entity";
 
-import { WalletDepositDTO } from "@application/wallets/dtos/wallet-deposit.dto";
-import { DepositInWalletUseCase } from "@application/wallets/use-cases/deposit-in-wallet/deposit-in-wallet.use-case";
 import { LoggedInUser } from "@common/decorators/logged-in-user.decorator";
-import {
-	Body,
-	Controller,
-	Get,
-	HttpCode,
-	HttpStatus,
-	Post,
-} from "@nestjs/common";
+import { Controller, Get, HttpCode, HttpStatus } from "@nestjs/common";
 import {
 	ApiBearerAuth,
 	ApiOperation,
@@ -25,10 +16,7 @@ import {
 @ApiTags("Wallets")
 @ApiBearerAuth()
 export class WalletsController {
-	constructor(
-		private readonly findUserWalletUseCase: FindUserWalletUseCase,
-		private readonly depositInWalletUseCase: DepositInWalletUseCase,
-	) {}
+	constructor(private readonly findUserWalletUseCase: FindUserWalletUseCase) {}
 
 	@ApiOperation({
 		description: "Retrieve the wallet of a user by their ID",
@@ -41,20 +29,5 @@ export class WalletsController {
 	@Get()
 	public async findUserWallet(@LoggedInUser() user: UserEntity) {
 		return await this.findUserWalletUseCase.execute(user.id);
-	}
-
-	@ApiOperation({
-		description: "Deposit an amount into the user's wallet",
-	})
-	@ApiResponse({
-		status: HttpStatus.OK,
-	})
-	@HttpCode(HttpStatus.OK)
-	@Post("deposit")
-	public async depositInWallet(
-		@LoggedInUser() user: UserEntity,
-		@Body() data: WalletDepositDTO,
-	) {
-		await this.depositInWalletUseCase.execute(user, data);
 	}
 }

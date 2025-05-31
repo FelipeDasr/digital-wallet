@@ -34,7 +34,7 @@ export class UserEntity {
 		(wallet) => wallet.user,
 		{ createForeignKeyConstraints: false, eager: true },
 	)
-	wallets?: WalletEntity[];
+	wallets: WalletEntity[];
 
 	constructor(partial: Partial<UserEntity> = {}) {
 		Object.assign(this, partial);

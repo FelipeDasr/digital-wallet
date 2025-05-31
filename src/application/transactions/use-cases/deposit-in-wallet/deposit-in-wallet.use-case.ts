@@ -1,10 +1,10 @@
+import { WalletDepositDTO } from "@application/transactions/dtos/wallet-deposit.dto";
 import {
 	TransactionStatus,
 	TransactionType,
 } from "@application/transactions/entities/transaction.entity";
 import { TransactionsRepository } from "@application/transactions/repositories/transactions.repository";
 import { UserEntity } from "@application/users/entities/user.entity";
-import { WalletDepositDTO } from "@application/wallets/dtos/wallet-deposit.dto";
 import { WalletsRepository } from "@application/wallets/repositories/wallets.repository";
 import { DatabaseTransaction } from "@infra/database/types/transactions.props";
 
@@ -19,7 +19,7 @@ export class DepositInWalletUseCase {
 	) {}
 
 	async execute(user: UserEntity, { amount }: WalletDepositDTO): Promise<void> {
-		const walletId = user.wallets?.[0]?.id as string;
+		const walletId = user.wallets[0].id;
 
 		await this.databaseTransaction.start(async (transaction) => {
 			await Promise.all([
