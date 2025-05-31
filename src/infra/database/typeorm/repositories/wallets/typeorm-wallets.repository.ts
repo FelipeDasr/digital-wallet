@@ -1,4 +1,4 @@
-import WalletEntity from "@application/wallets/entities/wallet.entity";
+import { WalletEntity } from "@application/wallets/entities/wallet.entity";
 
 import { WalletsRepository } from "@application/wallets/repositories/wallets.repository";
 
@@ -12,5 +12,9 @@ export class TypeORMWalletsRepository implements WalletsRepository {
 
 	constructor(private readonly db: TypeORMService) {
 		this.repository = this.db.getRepository(WalletEntity);
+	}
+
+	public async findByUserId(userId: string): Promise<WalletEntity | null> {
+		return await this.repository.findOneBy({ user_id: userId });
 	}
 }

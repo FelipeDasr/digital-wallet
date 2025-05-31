@@ -1,4 +1,4 @@
-import WalletEntity from "@application/wallets/entities/wallet.entity";
+import { WalletEntity } from "@application/wallets/entities/wallet.entity";
 import {
 	Column,
 	Entity,

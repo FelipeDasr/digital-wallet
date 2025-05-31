@@ -46,5 +46,3 @@ export class WalletEntity {
 		Object.assign(this, partial);
 	}
 }
-
-export default WalletEntity;

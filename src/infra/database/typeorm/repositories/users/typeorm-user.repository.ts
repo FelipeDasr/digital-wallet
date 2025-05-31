@@ -1,10 +1,12 @@
 import { CreateUserDTO } from "@application/users/dtos/create-user.dto";
+
 import {
 	UserEntity,
 	UserEntityWithoutPassword,
 } from "@application/users/entities/user.entity";
+import { WalletEntity } from "@application/wallets/entities/wallet.entity";
+
 import { UsersRepository } from "@application/users/repositories/users.repository";
-import WalletEntity from "@application/wallets/entities/wallet.entity";
 import { Injectable } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { TypeORMService } from "../../typeorm.service";

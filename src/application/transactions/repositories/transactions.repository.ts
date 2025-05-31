@@ -1,1 +1,1 @@
-export class TransactionsRepository {}
+export abstract class TransactionsRepository {}

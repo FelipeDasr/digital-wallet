@@ -1,6 +1,6 @@
 import { TransactionEntity } from "@application/transactions/entities/transaction.entity";
 import { UserEntity } from "@application/users/entities/user.entity";
-import WalletEntity from "@application/wallets/entities/wallet.entity";
+import { WalletEntity } from "@application/wallets/entities/wallet.entity";
 
 import { env } from "src/env";
 
