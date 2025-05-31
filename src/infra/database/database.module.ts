@@ -7,11 +7,17 @@ import { TypeORMUserRepository } from "./typeorm/repositories/users/typeorm-user
 import { TypeORMWalletsRepository } from "./typeorm/repositories/wallets/typeorm-wallets.repository";
 
 import { Module } from "@nestjs/common";
+import { TypeORMTransaction } from "./typeorm/transaction";
 import { TypeORMService } from "./typeorm/typeorm.service";
+import { DatabaseTransaction } from "./types/transactions.props";
 
 @Module({
 	providers: [
 		TypeORMService,
+		{
+			provide: DatabaseTransaction,
+			useClass: TypeORMTransaction,
+		},
 		{
 			provide: UsersRepository,
 			useClass: TypeORMUserRepository,
@@ -25,6 +31,11 @@ import { TypeORMService } from "./typeorm/typeorm.service";
 			useClass: TypeORMTransactionsRepository,
 		},
 	],
-	exports: [UsersRepository, WalletsRepository, TransactionsRepository],
+	exports: [
+		DatabaseTransaction,
+		UsersRepository,
+		WalletsRepository,
+		TransactionsRepository,
+	],
 })
 export class DatabaseModule {}
