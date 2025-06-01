@@ -25,4 +25,22 @@ export class TypeORMTransactionsRepository implements TransactionsRepository {
 
 		return newTransactions.id;
 	}
+
+	public async findById(
+		id: string,
+		transaction: EntityManager,
+	): Promise<TransactionEntity | null> {
+		return await transaction.getRepository(TransactionEntity).findOneBy({ id });
+	}
+
+	public async updateById(
+		id: string,
+		data: Partial<Omit<TransactionEntity, "id">>,
+		transaction: EntityManager,
+	): Promise<void> {
+		await transaction.getRepository(TransactionEntity).update(id, {
+			...data,
+			updatedAt: new Date(),
+		});
+	}
 }

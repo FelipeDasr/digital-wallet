@@ -1,4 +1,6 @@
 import { DepositInWalletUseCase } from "@application/transactions/use-cases/deposit-in-wallet/deposit-in-wallet.use-case";
+import { RevertTransactionUseCase } from "@application/transactions/use-cases/revert-transaction/revert-transaction.use-case";
+import { TransferToWalletUseCase } from "@application/transactions/use-cases/transfer-to-wallet/transfer-to-wallet.use-case";
 
 import { UserEntity } from "@application/users/entities/user.entity";
 
@@ -6,7 +8,6 @@ import { TransactionIdDTO } from "@application/transactions/dtos/transaction-id.
 import { WalletDepositDTO } from "@application/transactions/dtos/wallet-deposit.dto";
 import { WalletTransferDTO } from "@application/transactions/dtos/wallet-transfer";
 
-import { TransferToWalletUseCase } from "@application/transactions/use-cases/transfer-to-wallet/transfer-to-wallet.use-case";
 import { LoggedInUser } from "@common/decorators/logged-in-user.decorator";
 import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import {
@@ -23,6 +24,7 @@ export class TransactionsController {
 	constructor(
 		private readonly depositInWalletUseCase: DepositInWalletUseCase,
 		private readonly transferToWalletUseCase: TransferToWalletUseCase,
+		private readonly revertTransactionUseCase: RevertTransactionUseCase,
 	) {}
 
 	@ApiOperation({
@@ -54,5 +56,20 @@ export class TransactionsController {
 		@Body() data: WalletTransferDTO,
 	) {
 		return await this.transferToWalletUseCase.execute(user, data);
+	}
+
+	@ApiOperation({
+		description: "Revert a transaction",
+	})
+	@ApiResponse({
+		status: HttpStatus.OK,
+	})
+	@HttpCode(HttpStatus.OK)
+	@Post("revert")
+	public async revertTransaction(
+		@LoggedInUser() user: UserEntity,
+		@Body() data: TransactionIdDTO,
+	) {
+		await this.revertTransactionUseCase.execute(user, data.transactionId);
 	}
 }
