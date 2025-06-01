@@ -1,0 +1,12 @@
+node_modules
+dist
+Dockerfile
+.git
+.gitignore
+*.md
+tests
+coverage
+.vscode
+.env
+README.md
+*.log
