@@ -1,98 +1,150 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Carteira Digital - API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<div styles="text-align: center;">
+  <img alt="docker-badge" src="https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=Docker&logoColor=white"/>
+  <img alt="nodejs-badge" src="https://img.shields.io/badge/Node.js-339933.svg?style=for-the-badge&logo=Node.js&logoColor=white"/>
+  <img alt="typescript-badge" src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white"/>
+  <img alt="nestjs-badge" src="https://img.shields.io/badge/NestJS-E0234E.svg?style=for-the-badge&logo=NestJS&logoColor=white"/>
+  <img alt="typeorm-badge" src="https://img.shields.io/badge/TypeORM-FE0803.svg?style=for-the-badge&logo=TypeORM&logoColor=white"/>
+  <img alt="passport-badge" src="https://img.shields.io/badge/Passport-000000.svg?style=for-the-badge&logo=Passport&logoColor=white"/>
+  <img alt="jwt-badge" src="https://img.shields.io/badge/JWT-000000.svg?style=for-the-badge&logo=JSON%20Web%20Tokens&logoColor=white"/>
+  <img alt="swagger-badge" src="https://img.shields.io/badge/Swagger-85EA2D.svg?style=for-the-badge&logo=Swagger&logoColor=black"/>
+</div>
+</br>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- [Arquitura](#estrutura-do-projeto)
+  - [Modelagem do banco de dados](#modelagem-do-banco-de-dados)
+  - [ORM](#orm)
+  - [Locking de dados e concorrência](#locking-de-dados-e-concorrência)
+  - [Testes](#testes)
+  - [Estrutura de pastas](#estrutura-de-pastas)
 
-## Description
+</br>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Executando o projeto](#como-rodar-o-projeto)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Rodando a aplicação](#rodando)
+  - [Documentação da API (Swagger)](#swagger)
 
-## Project setup
+## Estrutura do projeto
 
-```bash
-$ yarn install
+O projeto está organizado e separado em módulos, cada um com suas responsabilidades bem definidas. Segui um padrão de DDD para organizar cada domínio, mesmo que não 100% explícito, e dentro de cada domínio, separei as responsabilidades em camadas como DTOs, entidades, repositórios e casos de uso.
+
+### Modelagem do banco de dados
+
+A estrutura das entidades é bem simples, com três entidades principais: `User`, `Wallet` e `Transaction`.
+
+Uma `User` pode ter várias `Wallets`, e cada `Wallet` pode ter várias `Transactions`. As transações podem ser de depósito, transferência ou reversão (Estorno).
+
+<img alt="er-diagrama" src="./docs/images/er-diagrama.png"/>
+
+### ORM
+
+O projeto utiliza o TypeORM como ORM para interagir com o banco de dados. Mas está abstraído em repositórios, então você pode trocar o ORM facilmente se necessário.
+
+Realizações de transações também foi abstraída, onde podemos executar a lógica dentro do handler de forma simples, cobrindo casos de sucessos e erros.
+
+### Locking de dados e concorrência
+
+Para evitar problemas de concorrência, o projeto implementa um sistema de locking de dados, em toda transação que envolve saldo de carteiras. Isso garante que duas transações não possam modificar o mesmo saldo ao mesmo tempo, evitando inconsistências dos valores.
+
+### Testes
+
+O projeto possui testes unitários para garantir o funcionamento correto de cada módulo. Os testes estão localizados dentro de cada módulo.
+
+### Estrutura de pastas
+
+<details>
+<summary>Veja a estrutura de pastas do projeto</summary>
+
+```📂 src
+├── 📂 application
+│   ├── 📂 transactions
+│   │   ├── 📂 dtos
+│   │   ├── 📂 entities
+│   │   ├── 📂 repositories
+│   │   ├── 📂 use-cases
+│   │       ├── 📂 deposit-in-wallet
+│   │       ├── 📂 list-transfers
+│   │       ├── 📂 revert-transaction
+│   │       ├── 📂 transfer-to-wallet
+│   ├── 📂 users
+│   │   ├── 📂 dtos
+│   │   ├── 📂 entities
+│   │   ├── 📂 repositories
+│   │   ├── 📂 use-cases
+│   │       ├── 📂 authenticate-user
+│   │       ├── 📂 create-user
+│   ├── 📂 wallets
+│   │   ├── 📂 dtos
+│   │   ├── 📂 entities
+│   │   ├── 📂 repositories
+│   │   ├── 📂 use-cases
+│   │       ├── 📂 check-wallet-balance
+│   │       ├── 📂 find-user-wallet
+│   │       ├── 📂 reallocate-wallet-balances
+├── 📂 common
+│   ├── 📂 decorators
+│   ├── 📂 providers
+│   │   ├── 📂 hash
+│   │       ├── 📂 types
+├── 📂 infra
+│   ├── 📂 auth
+│   │   ├── 📂 guards
+│   │   ├── 📂 strategies
+│   │   ├── 📂 types
+│   ├── 📂 database
+│   │   ├── 📂 typeorm
+│   │   │   ├── 📂 mappers
+│   │   │   ├── 📂 migrations
+│   │   │   ├── 📂 repositories
+│   │   │       ├── 📂 transactions
+│   │   │       ├── 📂 users
+│   │   │       ├── 📂 wallets
+│   ├── 📂 http
+│   │   ├── 📂 controllers
+│   │       ├── 📂 auth
+│   │       ├── 📂 transfers
+│   │       ├── 📂 wallets
+
 ```
 
-## Compile and run the project
+</details>
+
+---
+
+## Como rodar o projeto
+
+<div styles="text-align: center;">
+  <img alt="nodejs-badge" src="https://img.shields.io/badge/Node.js-339933.svg?style=for-the-badge&logo=Node.js&logoColor=white"/>
+  <img alt="docker-badge" src="https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=Docker&logoColor=white"/>
+</div>
+</br>
+
+Vamos ser diretos e rodar direto no Docker, que é a forma mais simples de rodar o projeto.
+
+### Pré-requisitos
+
+Devemos ter um arquivo `.env` na raiz, então apenas copie o arquivo `.env.example` para `.env`, não é necessário alterar nada, pois já está configurado para rodar no Docker de forma simples.
+
+### Rodando
+
+Para rodar, basta executar o seguinte comando:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+docker compose up -d
 ```
 
-## Run tests
+Isso irá iniciar os containers do banco de dados e da aplicação. A aplicação estará disponível em `http://localhost:5000`.
 
-```bash
-# unit tests
-$ yarn run test
+## Swagger
 
-# e2e tests
-$ yarn run test:e2e
+<div styles="text-align: center;">
+  <img alt="swagger-badge" src="https://img.shields.io/badge/Swagger-85EA2D.svg?style=for-the-badge&logo=Swagger&logoColor=black"/>
 
-# test coverage
-$ yarn run test:cov
-```
+</div>
+</br>
 
-## Deployment
+Para acessar a documentação da API, você pode acessar o Swagger em `http://localhost:5000/api-docs`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+ou [clique aqui](http://localhost:5000/api-docs).
