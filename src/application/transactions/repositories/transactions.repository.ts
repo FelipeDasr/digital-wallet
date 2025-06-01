@@ -1,5 +1,9 @@
 import { DatabaseTransactionManager } from "@infra/database/types/transactions.props";
 import { CreateTransactionDTO } from "../dtos/create-transaction.dto";
+import {
+	ListTransactionDTO,
+	TransactionListResponseDTO,
+} from "../dtos/list-transactions.dto";
 import { TransactionEntity } from "../entities/transaction.entity";
 
 export abstract class TransactionsRepository {
@@ -12,6 +16,11 @@ export abstract class TransactionsRepository {
 		transactionId: string,
 		transaction: DatabaseTransactionManager,
 	): Promise<TransactionEntity | null>;
+
+	public abstract findMany(
+		walletId: string,
+		query: ListTransactionDTO,
+	): Promise<TransactionListResponseDTO>;
 
 	public abstract updateById(
 		id: string,

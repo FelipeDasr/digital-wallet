@@ -1,4 +1,5 @@
 import { DepositInWalletUseCase } from "@application/transactions/use-cases/deposit-in-wallet/deposit-in-wallet.use-case";
+import { ListTransfersUseCase } from "@application/transactions/use-cases/list-transfers/list-transfers.use-case";
 import { RevertTransactionUseCase } from "@application/transactions/use-cases/revert-transaction/revert-transaction.use-case";
 import { TransferToWalletUseCase } from "@application/transactions/use-cases/transfer-to-wallet/transfer-to-wallet.use-case";
 import { AuthenticateUserUseCase } from "@application/users/use-cases/authenticate-user/authenticate-user.use-case";
@@ -28,6 +29,7 @@ import { Module } from "@nestjs/common";
 		DepositInWalletUseCase,
 		TransferToWalletUseCase,
 		RevertTransactionUseCase,
+		ListTransfersUseCase,
 	],
 	exports: [],
 })

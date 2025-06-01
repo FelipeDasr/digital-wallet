@@ -1,15 +1,28 @@
 import { DepositInWalletUseCase } from "@application/transactions/use-cases/deposit-in-wallet/deposit-in-wallet.use-case";
+import { ListTransfersUseCase } from "@application/transactions/use-cases/list-transfers/list-transfers.use-case";
 import { RevertTransactionUseCase } from "@application/transactions/use-cases/revert-transaction/revert-transaction.use-case";
 import { TransferToWalletUseCase } from "@application/transactions/use-cases/transfer-to-wallet/transfer-to-wallet.use-case";
 
 import { UserEntity } from "@application/users/entities/user.entity";
 
+import {
+	ListTransactionDTO,
+	TransactionListResponseDTO,
+} from "@application/transactions/dtos/list-transactions.dto";
 import { TransactionIdDTO } from "@application/transactions/dtos/transaction-id.dto";
 import { WalletDepositDTO } from "@application/transactions/dtos/wallet-deposit.dto";
 import { WalletTransferDTO } from "@application/transactions/dtos/wallet-transfer";
 
 import { LoggedInUser } from "@common/decorators/logged-in-user.decorator";
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	HttpCode,
+	HttpStatus,
+	Post,
+	Query,
+} from "@nestjs/common";
 import {
 	ApiBearerAuth,
 	ApiOperation,
@@ -25,7 +38,24 @@ export class TransactionsController {
 		private readonly depositInWalletUseCase: DepositInWalletUseCase,
 		private readonly transferToWalletUseCase: TransferToWalletUseCase,
 		private readonly revertTransactionUseCase: RevertTransactionUseCase,
+		private readonly listTransfersUseCase: ListTransfersUseCase,
 	) {}
+
+	@ApiOperation({
+		description: "List all transactions for the authenticated user",
+	})
+	@ApiResponse({
+		status: HttpStatus.OK,
+		type: TransactionListResponseDTO,
+	})
+	@HttpCode(HttpStatus.OK)
+	@Get()
+	public async listTransactions(
+		@LoggedInUser() user: UserEntity,
+		@Query() query: ListTransactionDTO,
+	) {
+		return await this.listTransfersUseCase.execute(user, query);
+	}
 
 	@ApiOperation({
 		description: "Deposit an amount into the user's wallet",

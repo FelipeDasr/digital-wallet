@@ -47,14 +47,14 @@ export class TransactionEntity {
 	@Column({
 		name: "created_at",
 		type: "timestamp",
-		default: "NOW()",
+		default: () => "CURRENT_TIMESTAMP",
 	})
 	createdAt: Date;
 
 	@Column({
 		name: "updated_at",
 		type: "timestamp",
-		default: "NOW()",
+		default: () => "CURRENT_TIMESTAMP",
 	})
 	updatedAt: Date;
 

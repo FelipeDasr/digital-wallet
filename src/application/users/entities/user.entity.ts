@@ -19,13 +19,13 @@ export class UserEntity {
 
 	@Column({
 		name: "created_at",
-		default: "NOW()",
+		default: () => "CURRENT_TIMESTAMP",
 	})
 	createdAt: Date;
 
 	@Column({
 		name: "updated_at",
-		default: "NOW()",
+		default: () => "CURRENT_TIMESTAMP",
 	})
 	updatedAt: Date;
 
