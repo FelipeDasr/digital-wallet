@@ -4,6 +4,7 @@ import { WalletsRepository } from "@application/wallets/repositories/wallets.rep
 import { UserEntity } from "@application/users/entities/user.entity";
 
 import { CheckWalletBalanceUseCase } from "@application/wallets/use-cases/check-wallet-balance/check-wallet-balance.use-case";
+import { ReallocateWalletBalancesUseCase } from "@application/wallets/use-cases/reallocate-wallet-balances/reallocate-wallet-balances.use-case";
 
 import {
 	TransactionEntity,
@@ -23,6 +24,7 @@ export class RevertTransactionUseCase {
 		private readonly transactionsRepository: TransactionsRepository,
 		private readonly databaseTransaction: DatabaseTransaction,
 		private readonly checkWalletBalanceUseCase: CheckWalletBalanceUseCase,
+		private readonly reallocateWalletBalancesUseCase: ReallocateWalletBalancesUseCase,
 	) {}
 
 	public async execute(user: UserEntity, transactionId: string) {
@@ -43,18 +45,13 @@ export class RevertTransactionUseCase {
 				dbTransaction,
 			);
 
-			const newDebitValue = amount * -1;
 			await Promise.all([
-				this.walletsRepository.incrementBalanceById(
-					sourceWalletId as string,
+				this.reallocateWalletBalancesUseCase.execute({
+					sourceWalletId: destinationWalletId as string,
+					destinationWalletId: sourceWalletId as string,
 					amount,
 					dbTransaction,
-				),
-				this.walletsRepository.incrementBalanceById(
-					destinationWalletId as string,
-					newDebitValue,
-					dbTransaction,
-				),
+				}),
 				this.transactionsRepository.updateById(
 					transactionId,
 					{ status: TransactionStatus.REFUNDED },

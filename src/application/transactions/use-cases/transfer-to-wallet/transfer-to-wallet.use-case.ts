@@ -5,11 +5,13 @@ import { TransactionIdDTO } from "@application/transactions/dtos/transaction-id.
 import { WalletTransferDTO } from "@application/transactions/dtos/wallet-transfer";
 import { UserEntity } from "@application/users/entities/user.entity";
 
+import { CheckWalletBalanceUseCase } from "@application/wallets/use-cases/check-wallet-balance/check-wallet-balance.use-case";
+import { ReallocateWalletBalancesUseCase } from "@application/wallets/use-cases/reallocate-wallet-balances/reallocate-wallet-balances.use-case";
+
 import {
 	TransactionStatus,
 	TransactionType,
 } from "@application/transactions/entities/transaction.entity";
-import { CheckWalletBalanceUseCase } from "@application/wallets/use-cases/check-wallet-balance/check-wallet-balance.use-case";
 import {
 	DatabaseTransaction,
 	DatabaseTransactionManager,
@@ -23,6 +25,7 @@ export class TransferToWalletUseCase {
 		private readonly walletsRepository: WalletsRepository,
 		private readonly databaseTransaction: DatabaseTransaction,
 		private readonly checkWalletBalanceUseCase: CheckWalletBalanceUseCase,
+		private readonly reallocateWalletBalancesUseCase: ReallocateWalletBalancesUseCase,
 	) {}
 
 	public async execute(
@@ -41,17 +44,13 @@ export class TransferToWalletUseCase {
 
 			await this.checkDestinationWallet(destinationWalletId, transaction);
 
-			const [_, __, transactionId] = await Promise.all([
-				this.walletsRepository.incrementBalanceById(
+			const [_, transactionId] = await Promise.all([
+				this.reallocateWalletBalancesUseCase.execute({
 					sourceWalletId,
-					newDebitValue,
-					transaction,
-				),
-				this.walletsRepository.incrementBalanceById(
 					destinationWalletId,
 					amount,
-					transaction,
-				),
+					dbTransaction: transaction,
+				}),
 				this.transactionsRepository.create(
 					{
 						status: TransactionStatus.COMPLETED,
