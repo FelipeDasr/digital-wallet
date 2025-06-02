@@ -14,9 +14,14 @@ services:
     restart: always
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # Manual build configuration
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+
+    # Using pre-built image for simplicity
+    image: felipedasr/grupo-ac-teste-tecnico
+
     container_name: app
     ports:
       - 5000:5000
