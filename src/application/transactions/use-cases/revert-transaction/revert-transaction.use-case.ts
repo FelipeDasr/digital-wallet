@@ -1,5 +1,4 @@
 import { TransactionsRepository } from "@application/transactions/repositories/transactions.repository";
-import { WalletsRepository } from "@application/wallets/repositories/wallets.repository";
 
 import { UserEntity } from "@application/users/entities/user.entity";
 
@@ -20,7 +19,6 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 @Injectable()
 export class RevertTransactionUseCase {
 	constructor(
-		private readonly walletsRepository: WalletsRepository,
 		private readonly transactionsRepository: TransactionsRepository,
 		private readonly databaseTransaction: DatabaseTransaction,
 		private readonly checkWalletBalanceUseCase: CheckWalletBalanceUseCase,
@@ -40,7 +38,7 @@ export class RevertTransactionUseCase {
 
 			await this.verifyWalletsOwnership(userWalletId, transaction);
 			await this.checkWalletBalanceUseCase.execute(
-				sourceWalletId as string,
+				destinationWalletId as string,
 				amount,
 				dbTransaction,
 			);

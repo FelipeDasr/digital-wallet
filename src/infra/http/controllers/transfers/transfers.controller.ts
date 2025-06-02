@@ -20,6 +20,7 @@ import {
 	Get,
 	HttpCode,
 	HttpStatus,
+	Param,
 	Post,
 	Query,
 } from "@nestjs/common";
@@ -95,11 +96,11 @@ export class TransactionsController {
 		status: HttpStatus.OK,
 	})
 	@HttpCode(HttpStatus.OK)
-	@Post("revert")
+	@Post("/:transactionId/revert")
 	public async revertTransaction(
 		@LoggedInUser() user: UserEntity,
-		@Body() data: TransactionIdDTO,
+		@Param() params: TransactionIdDTO,
 	) {
-		await this.revertTransactionUseCase.execute(user, data.transactionId);
+		await this.revertTransactionUseCase.execute(user, params.transactionId);
 	}
 }
